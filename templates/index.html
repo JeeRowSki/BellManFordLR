@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Алгоритм Беллмана-Форда</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        .error {
+            color: red;
+        }
+        .remove-edge {
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Алгоритм Беллмана-Форда</h1>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="error">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+        <label for="vertices">Количество вершин:</label>
+        <input type="number" name="vertices" required min="1">
+
+        <h3>Добавить рёбра:</h3>
+        <div id="edges">
+            <div class="edge-inputs">
+                <span>Ребро 1:</span>
+                <input type="number" name="start_vertices" placeholder="Начальная вершина" required min="0">
+                <input type="number" name="end_vertices" placeholder="Конечная вершина" required min="0">
+                <input type="number" name="weights" placeholder="Вес" required>
+                <button type="button" class="remove-edge" onclick="removeEdge(this)">Удалить</button>
+            </div>
+        </div>
+        <button type="button" onclick="addEdge()">Добавить ребро</button>
+        <br>
+        <button type="submit">Рассчитать кратчайшие пути</button>
+        <button type="submit" name="generate_random_tree">Сгенерировать случайное дерево</button>
+    </form>
+
+    {% if result %}
+        <div class="result">
+            <h2>Результаты:</h2>
+            <pre>{{ result }}</pre>
+            <h3>Исходный граф:</h3>
+            <img src="../static/original_graph.png" alt="Исходный граф">
+            <h3>Кратчайший путь:</h3>
+            <img src="../static/shortest_path.png" alt="Кратчайший путь">
+            <h3>Визуализация шагов:</h3>
+            {% for i in range(1, steps_count + 1) %}
+                <img src="/static/step_{{ i }}.png" alt="Шаг {{ i }}">
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <script>
+        let edgeCount = 1;
+
+        function addEdge() {
+            edgeCount++;
+            const div = document.createElement('div');
+            div.className = "edge-inputs";
+            div.innerHTML = `
+                <span>Ребро ${edgeCount}:</span>
+                <input type="number" name="start_vertices" placeholder="Начальная вершина" required min="0">
+                <input type="number" name="end_vertices" placeholder="Конечная вершина" required min="0">
+                <input type="number" name="weights" placeholder="Вес" required>
+                <button type="button" class="remove-edge" onclick="removeEdge(this)">Удалить</button>
+            `;
+            document.getElementById('edges').appendChild(div);
+        }
+
+        function removeEdge(button) {
+            button.parentElement.remove();
+        }
+    </script>
+</body>
+</html>
