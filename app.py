@@ -196,3 +196,7 @@ if __name__ == '__main__':
     else:
         print("Нет разрешения на запись в папку 'static'.")
     app.run(debug=True)
+
+def table():
+    pass
+table()
