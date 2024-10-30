@@ -1,16 +1,21 @@
+from importlib import import_module
+
 from flask import Flask, render_template, request, flash, redirect
 import matplotlib
 import matplotlib.pyplot as plt
 import networkx as nx
 import random
 import os
+import webbrowser
+import threading
 
 matplotlib.use('Agg')  # Используем неблокирующий бэкенд
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Необходим для использования flash сообщений
 
-STATIC_DIR = r'C:\Users\admin\PycharmProjects\Bellman-Ford LAB\static'
+STATIC_DIR = os.path.join(os.path.dirname(__file__), 'static')
+
 
 class Graph:
     def __init__(self, vertices):
@@ -187,6 +192,8 @@ def visualize(graph, steps, shortest_path):
     plt.savefig(os.path.join(STATIC_DIR, 'shortest_path.png'))
     plt.close()
 
+def open_browser():
+    webbrowser.open_new("http://127.0.0.1:5000/")
 
 if __name__ == '__main__':
     if not os.path.exists(STATIC_DIR):
@@ -195,8 +202,5 @@ if __name__ == '__main__':
         print("Разрешение на запись в папку 'static' доступно.")
     else:
         print("Нет разрешения на запись в папку 'static'.")
+    threading.Timer(1, open_browser).start()
     app.run(debug=True)
-
-def table():
-    pass
-table()
